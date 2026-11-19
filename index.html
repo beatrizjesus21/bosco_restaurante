@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bosco Restaurante | Gestão de Mesas</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-icon">B.</div>
+                <div>
+                    <h1>Bosco <span>Restaurante</span></h1>
+                    <p>GESTÃO DE SALÃO</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <span class="date-display" id="currentDate"></span>
+                <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+                    <span id="themeIcon">☾</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <section class="welcome-section">
+                <div>
+                    <span class="eyebrow">PAINEL DE CONTROLE</span>
+                    <h2>Gestão de <em>mesas</em></h2>
+                    <p>Organize o salão e gerencie suas reservas em um só lugar.</p>
+                </div>
+
+                <button class="primary-button" id="openReservation">
+                    <span>＋</span> Nova reserva
+                </button>
+            </section>
+
+            <section class="summary-grid">
+                <article class="summary-card">
+                    <div class="summary-icon free-icon">✓</div>
+                    <div>
+                        <p>Mesas livres</p>
+                        <strong id="freeCount">0</strong>
+                    </div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon occupied-icon">●</div>
+                    <div>
+                        <p>Mesas ocupadas</p>
+                        <strong id="occupiedCount">0</strong>
+                    </div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon reserved-icon">◷</div>
+                    <div>
+                        <p>Mesas reservadas</p>
+                        <strong id="reservedCount">0</strong>
+                    </div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon total-icon">▦</div>
+                    <div>
+                        <p>Total de mesas</p>
+                        <strong id="totalCount">12</strong>
+                    </div>
+                </article>
+            </section>
+
+            <section class="content-grid">
+
+                <div class="map-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="eyebrow">ORGANIZAÇÃO DO SALÃO</span>
+                            <h3>Mapa de mesas</h3>
+                        </div>
+                        <span class="live-indicator">● Ao vivo</span>
+                    </div>
+
+                    <div class="legend">
+                        <span><i class="dot free-dot"></i> Livre</span>
+                        <span><i class="dot occupied-dot"></i> Ocupada</span>
+                        <span><i class="dot reserved-dot"></i> Reservada</span>
+                    </div>
+
+                    <div class="salon-label">
+                        <span>ÁREA PRINCIPAL</span>
+                        <span>12 MESAS</span>
+                    </div>
+
+                    <div class="tables-grid" id="tablesGrid"></div>
+
+                    <p class="map-hint">
+                        Clique em uma mesa para visualizar e alterar suas informações.
+                    </p>
+                </div>
+
+                <aside class="reservations-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="eyebrow">PROGRAMAÇÃO</span>
+                            <h3>Reservas do dia</h3>
+                        </div>
+                        <span class="reservation-number" id="reservationCount">0</span>
+                    </div>
+
+                    <div class="reservations-list" id="reservationsList">
+                        <div class="empty-state">
+                            <span>♧</span>
+                            <p>Nenhuma reserva cadastrada.</p>
+                        </div>
+                    </div>
+
+                    <button class="secondary-button" id="openReservationBottom">
+                        + Adicionar reserva
+                    </button>
+                </aside>
+
+            </section>
+        </main>
+
+        <footer>
+            <span>BOSCO RESTAURANTE</span>
+            <span>Gestão de salão • Sistema demonstrativo</span>
+        </footer>
+    </div>
+
+    <!-- MODAL DE RESERVA -->
+
+    <div class="modal-overlay" id="reservationModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div>
+                    <span class="eyebrow">NOVA RESERVA</span>
+                    <h3>Registrar reserva</h3>
+                </div>
+                <button class="close-modal" data-close="reservationModal">×</button>
+            </div>
+
+            <form id="reservationForm">
+                <label for="customerName">Nome do cliente</label>
+                <input type="text" id="customerName" placeholder="Digite o nome completo" required>
+
+                <div class="form-row">
+                    <div>
+                        <label for="reservationDate">Data</label>
+                        <input type="date" id="reservationDate" required>
+                    </div>
+
+                    <div>
+                        <label for="reservationTime">Horário</label>
+                        <input type="time" id="reservationTime" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label for="peopleCount">Quantidade de pessoas</label>
+                        <input type="number" id="peopleCount" min="1" max="12" value="2" required>
+                    </div>
+
+                    <div>
+                        <label for="reservationTable">Mesa</label>
+                        <select id="reservationTable" required>
+                            <option value="">Selecione uma mesa</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label for="reservationNotes">Observações</label>
+                <textarea id="reservationNotes" placeholder="Alguma informação adicional?"></textarea>
+
+                <div class="modal-actions">
+                    <button type="button" class="cancel-button" data-close="reservationModal">Cancelar</button>
+                    <button type="submit" class="primary-button">Salvar reserva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE DETALHES DA MESA -->
+
+    <div class="modal-overlay" id="tableModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div>
+                    <span class="eyebrow">GERENCIAMENTO</span>
+                    <h3 id="tableModalTitle">Mesa</h3>
+                </div>
+                <button class="close-modal" data-close="tableModal">×</button>
+            </div>
+
+            <div class="table-details">
+                <p>Status atual</p>
+                <span id="currentTableStatus" class="status-badge"></span>
+            </div>
+
+            <label for="tableStatus">Alterar status</label>
+            <select id="tableStatus">
+                <option value="free">Livre</option>
+                <option value="occupied">Ocupada</option>
+                <option value="reserved">Reservada</option>
+            </select>
+
+            <div id="tableReservationInfo" class="table-reservation-info"></div>
+
+            <div class="modal-actions">
+                <button class="cancel-button" data-close="tableModal">Fechar</button>
+                <button class="primary-button" id="saveTableStatus">Salvar alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
