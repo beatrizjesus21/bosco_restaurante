@@ -738,3 +738,413 @@ footer {
         transition-duration: .01ms !important;
     }
 }
+
+
+/* ==========================================================================
+   LOGO E MENU DE NAVEGAÇÃO UNIFICADO
+   ========================================================================== */
+
+.brand-logo {
+    width: 68px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background-color: #f3eee4;
+    flex-shrink: 0;
+}
+
+.nav-principal {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 7px;
+    transition: .2s;
+}
+
+.nav-link:hover, .nav-link.active {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* ==========================================================================
+   MÓDULO 1: REGISTRO E ENVIO DE PEDIDOS (Prefixo: .ped-)
+   ========================================================================== */
+
+.ped-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.ped-search-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+}
+
+.ped-search-input:focus {
+    border-color: var(--primary);
+}
+
+.ped-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ped-tab {
+    background: var(--surface-soft);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.ped-tab:hover {
+    border-color: var(--primary);
+}
+
+.ped-tab.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+.ped-legend {
+    margin-bottom: 20px;
+}
+
+.ped-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.ped-dish-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    transition: .2s;
+}
+
+.ped-dish-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+    border-color: var(--primary);
+}
+
+.ped-dish-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.ped-dish-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.ped-dest-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.ped-dest-tag.cozinha {
+    background: var(--reserved-bg);
+    color: var(--reserved);
+}
+
+.ped-dest-tag.bar {
+    background: var(--free-bg);
+    color: var(--free);
+}
+
+.ped-dish-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.45;
+    margin-top: 6px;
+}
+
+.ped-dish-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+}
+
+.ped-dish-price {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--primary);
+}
+
+.ped-add-btn {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.ped-add-btn:hover {
+    background: var(--primary-hover);
+}
+
+/* COMANDA LATERAL */
+
+.ped-order-form label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+}
+
+.ped-order-form select,
+.ped-order-form input,
+.ped-order-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+}
+
+.ped-order-form select:focus,
+.ped-order-form input:focus,
+.ped-order-form textarea:focus {
+    border-color: var(--primary);
+}
+
+.ped-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.ped-cart-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 310px;
+    overflow-y: auto;
+    padding-right: 2px;
+    margin-bottom: 16px;
+}
+
+.ped-cart-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.ped-cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.ped-cart-header h4 {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ped-cart-meta {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+}
+
+.ped-qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ped-qty-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+}
+
+.ped-qty-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.ped-qty-val {
+    font-size: 12px;
+    font-weight: 700;
+    min-width: 18px;
+    text-align: center;
+}
+
+.ped-item-note {
+    padding: 7px 10px !important;
+    font-size: 11px !important;
+    background: var(--surface) !important;
+}
+
+.ped-notes-group textarea {
+    min-height: 64px;
+    resize: vertical;
+}
+
+.ped-summary-box {
+    background: var(--surface-soft);
+    border-radius: 8px;
+    padding: 14px;
+    margin: 16px 0;
+}
+
+.ped-routing-info {
+    font-size: 11px;
+    color: var(--muted);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+.ped-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.ped-total-row strong {
+    font-size: 18px;
+    color: var(--primary);
+}
+
+.ped-actions-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ped-submit-btn {
+    width: 100%;
+    text-align: center;
+}
+
+.ped-secondary-actions {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 10px;
+}
+
+.ped-no-margin {
+    margin-top: 0;
+}
+
+.ped-modal-wide {
+    width: min(620px, 100%);
+}
+
+.ped-modal-filter {
+    margin-bottom: 16px;
+}
+
+.ped-modal-filter label {
+    margin-top: 0;
+}
+
+.ped-sent-card {
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 14px;
+    background: var(--bg);
+}
+
+.ped-sent-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.ped-sent-items {
+    list-style: none;
+    font-size: 12px;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 8px 0;
+}
+
+.ped-sent-items li span {
+    color: var(--muted);
+    font-style: italic;
+}
+
+.ped-sent-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--muted);
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+}
+
+@media (max-width: 600px) {
+    .brand-logo {
+        width: 54px;
+        height: 54px;
+    }
+
+    .ped-menu-grid,
+    .ped-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
