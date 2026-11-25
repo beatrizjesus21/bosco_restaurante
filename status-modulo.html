@@ -1,0 +1,55 @@
+  <!-- ===================================================== -->
+  <!-- PARTE 2 - MÓDULO DE STATUS DOS PEDIDOS (Kemilly)      -->
+  <!-- Cole dentro do <div class="app-container">, depois    -->
+  <!-- da parte do mapa de mesas e antes do <footer>.        -->
+  <!-- ===================================================== -->
+  <section id="modulo-status" class="status-panel">
+
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">COZINHA E BAR</p>
+        <h3>Painel de Pedidos</h3>
+      </div>
+
+      <div class="status-controles">
+        <label for="status-filtro">Destino</label>
+        <select id="status-filtro" onchange="status_renderizar()">
+          <option value="todos">Todos</option>
+          <option value="cozinha">Cozinha</option>
+          <option value="bar">Bar</option>
+        </select>
+
+        <label for="status-limite">Alerta após (min)</label>
+        <input type="number" id="status-limite" value="15" min="1"
+               onchange="status_renderizar()">
+      </div>
+    </div>
+
+    <!-- Aviso de pedidos atrasados -->
+    <div id="status-alerta" class="status-alerta" hidden></div>
+
+    <!-- Colunas do painel, uma para cada status -->
+    <div class="status-quadro">
+      <div class="status-coluna coluna-aguardando">
+        <h3>Aguardando <span id="status-qtd-aguardando" class="status-contador">0</span></h3>
+        <div id="status-lista-aguardando" class="status-lista"></div>
+      </div>
+
+      <div class="status-coluna coluna-preparo">
+        <h3>Em Preparo <span id="status-qtd-preparo" class="status-contador">0</span></h3>
+        <div id="status-lista-preparo" class="status-lista"></div>
+      </div>
+
+      <div class="status-coluna coluna-pronto">
+        <h3>Pronto <span id="status-qtd-pronto" class="status-contador">0</span></h3>
+        <div id="status-lista-pronto" class="status-lista"></div>
+      </div>
+
+      <div class="status-coluna coluna-entregue">
+        <h3>Entregue <span id="status-qtd-entregue" class="status-contador">0</span></h3>
+        <div id="status-lista-entregue" class="status-lista"></div>
+      </div>
+    </div>
+
+  </section>
+  <!-- FIM DA PARTE 2 -->

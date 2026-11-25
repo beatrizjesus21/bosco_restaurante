@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prévia - Painel de Pedidos (padrão do grupo)</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+<style>
+
+:root {
+    --bg: #f3eee4;
+    --surface: #fffdf8;
+    --surface-soft: #ebe3d5;
+    --text: #343b38;
+    --muted: #85877f;
+    --primary: #234e4b;
+    --primary-hover: #173d3b;
+    --border: #e5ddcf;
+    --shadow: 0 8px 28px rgba(55, 47, 34, .06);
+
+    --free: #3e946d;
+    --free-bg: #e4f1e8;
+    --occupied: #c75c50;
+    --occupied-bg: #f8e7e3;
+    --reserved: #d38a37;
+    --reserved-bg: #fbefdc;
+}
+
+body.dark-theme {
+    --bg: #142e32;
+    --surface: #1d3b3e;
+    --surface-soft: #28484a;
+    --text: #f2eee4;
+    --muted: #b2c0b9;
+    --primary: #c38a57;
+    --primary-hover: #d29b68;
+    --border: #355457;
+    --shadow: 0 8px 28px rgba(0, 0, 0, .16);
+
+    --free-bg: #234b42;
+    --occupied-bg: #573936;
+    --reserved-bg: #59452d;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    transition: background .3s, color .3s;
+}
+
+button, input, select, textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.app-container {
+    width: min(1440px, 94%);
+    margin: auto;
+}
+
+/* HEADER */
+
+.topbar {
+    min-height: 95px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.brand-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--primary);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 25px;
+    border-radius: 50%;
+}
+
+.brand h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 23px;
+}
+
+.brand h1 span {
+    font-weight: 500;
+}
+
+.brand p {
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    margin-top: 3px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.date-display {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.theme-toggle {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 50%;
+    width: 43px;
+    height: 43px;
+    font-size: 22px;
+}
+
+/* WELCOME */
+
+.welcome-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 48px 0 32px;
+}
+
+.eyebrow {
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.welcome-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 43px);
+    margin: 8px 0;
+}
+
+.welcome-section h2 em {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.welcome-section p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.primary-button {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 13px 20px;
+    border-radius: 7px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.primary-button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.primary-button span {
+    font-size: 19px;
+    vertical-align: -1px;
+    margin-right: 5px;
+}
+
+/* SUMMARY */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 17px;
+    margin-bottom: 25px;
+}
+
+.summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 19px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: var(--shadow);
+}
+
+.summary-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    font-size: 19px;
+}
+
+.free-icon {
+    background: var(--free-bg);
+    color: var(--free);
+}
+
+.occupied-icon {
+    background: var(--occupied-bg);
+    color: var(--occupied);
+}
+
+.reserved-icon {
+    background: var(--reserved-bg);
+    color: var(--reserved);
+}
+
+.total-icon {
+    background: var(--surface-soft);
+    color: var(--primary);
+}
+
+.summary-card p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.summary-card strong {
+    font-size: 23px;
+}
+
+/* MAIN CONTENT */
+
+.content-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(280px, .9fr);
+    gap: 20px;
+}
+
+.map-panel, .reservations-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 25px;
+    box-shadow: var(--shadow);
+    min-width: 0;
+}
+
+.panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 23px;
+}
+
+.panel-heading h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    margin-top: 5px;
+}
+
+.live-indicator {
+    color: var(--free);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+}
+
+.legend span {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.free-dot { background: var(--free); }
+.occupied-dot { background: var(--occupied); }
+.reserved-dot { background: var(--reserved); }
+
+.salon-label {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    margin: 23px 0 15px;
+}
+
+/* TABLE MAP */
+
+.tables-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.table-card {
+    min-height: 112px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    padding: 13px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: .2s;
+    cursor: pointer;
+}
+
+.table-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+}
+
+.table-card.free {
+    background: var(--free-bg);
+    border-color: rgba(62, 148, 109, .25);
+}
+
+.table-card.occupied {
+    background: var(--occupied-bg);
+    border-color: rgba(199, 92, 80, .25);
+}
+
+.table-card.reserved {
+    background: var(--reserved-bg);
+    border-color: rgba(211, 138, 55, .25);
+}
+
+.table-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.table-card.free .table-number,
+.table-card.free .table-status {
+    color: var(--free);
+}
+
+.table-card.occupied .table-number,
+.table-card.occupied .table-status {
+    color: var(--occupied);
+}
+
+.table-card.reserved .table-number,
+.table-card.reserved .table-status {
+    color: var(--reserved);
+}
+
+.table-status {
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.table-capacity {
+    font-size: 10px;
+    color: var(--muted);
+}
+
+.map-hint {
+    color: var(--muted);
+    font-size: 11px;
+    text-align: center;
+    margin-top: 22px;
+}
+
+/* RESERVATIONS */
+
+.reservation-number {
+    background: var(--surface-soft);
+    color: var(--primary);
+    border-radius: 50%;
+    width: 29px;
+    height: 29px;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.reservations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 390px;
+    overflow-y: auto;
+}
+
+.reservation-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+}
+
+.reservation-item h4 {
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.reservation-item p {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+}
+
+.reservation-time {
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.delete-reservation {
+    background: transparent;
+    border: none;
+    color: var(--occupied);
+    font-size: 18px;
+    margin-left: 8px;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--muted);
+    padding: 45px 10px;
+}
+
+.empty-state span {
+    font-size: 32px;
+}
+
+.empty-state p {
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.secondary-button {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 12px;
+    border-radius: 7px;
+    margin-top: 18px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.secondary-button:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* MODALS */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(12, 23, 22, .62);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    background: var(--surface);
+    color: var(--text);
+    width: min(470px, 100%);
+    padding: 28px;
+    border-radius: 12px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,.2);
+    animation: appear .2s ease;
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.modal-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 25px;
+    margin-top: 5px;
+}
+
+.close-modal {
+    background: var(--surface-soft);
+    border: none;
+    color: var(--text);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 21px;
+}
+
+.modal label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 15px 0 7px;
+}
+
+.modal input,
+.modal select,
+.modal textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+}
+
+.modal input:focus,
+.modal select:focus,
+.modal textarea:focus {
+    border-color: var(--primary);
+}
+
+.modal textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 13px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.cancel-button {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 12px 17px;
+}
+
+.table-details {
+    background: var(--surface-soft);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 15px;
+}
+
+.table-details p {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 8px;
+}
+
+.status-badge {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.status-badge.free { color: var(--free); }
+.status-badge.occupied { color: var(--occupied); }
+.status-badge.reserved { color: var(--reserved); }
+
+.table-reservation-info {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-top: 15px;
+}
+
+/* NOTIFICATIONS */
+
+.toast {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: var(--primary);
+    color: white;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: .25s;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* FOOTER */
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 30px 0;
+    margin-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: .7px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 950px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .app-container {
+        width: 92%;
+    }
+
+    .topbar {
+        min-height: 78px;
+    }
+
+    .date-display {
+        display: none;
+    }
+
+    .welcome-section {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 32px 0 25px;
+    }
+
+    .summary-grid {
+        gap: 10px;
+    }
+
+    .summary-card {
+        padding: 13px 10px;
+        gap: 9px;
+    }
+
+    .summary-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .summary-card p {
+        font-size: 10px;
+    }
+
+    .summary-card strong {
+        font-size: 20px;
+    }
+
+    .map-panel, .reservations-panel {
+        padding: 17px;
+    }
+
+    .tables-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .table-card {
+        min-height: 100px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    footer {
+        flex-direction: column;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+}
+
+/* ===================================================== */
+/* PARTE 2 - MÓDULO DE STATUS DOS PEDIDOS (Kemilly)      */
+/* Segue o padrão do style.css do grupo:                 */
+/* fontes DM Sans / Playfair Display, variáveis de cor,  */
+/* painel igual ao .map-panel e suporte ao tema escuro.  */
+/* ===================================================== */
+
+/* Cores dos status (mesmo estilo das variáveis do grupo).
+   Ficam no body para acompanhar o tema escuro automaticamente. */
+body {
+    --waiting: #c9a227;      /* Aguardando (amarelo) */
+    --waiting-bg: #fbf3d9;
+    --preparing: #3f7ea6;    /* Em preparo (azul) */
+    --preparing-bg: #e3eef5;
+    --ready: var(--free);    /* Pronto (verde do grupo) */
+    --ready-bg: var(--free-bg);
+    --delivered: var(--muted);         /* Entregue (cinza) */
+    --delivered-bg: var(--surface-soft);
+    --late: var(--occupied);           /* Atrasado (vermelho do grupo) */
+    --late-bg: var(--occupied-bg);
+}
+
+body.dark-theme {
+    --waiting-bg: #574b2a;
+    --preparing-bg: #2b4656;
+}
+
+/* Painel (mesmo visual do .map-panel) */
+.status-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 25px;
+    box-shadow: var(--shadow);
+    margin-top: 20px;
+}
+
+/* Filtros no cabeçalho */
+.status-controles {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.status-controles label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.status-controles select,
+.status-controles input {
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+}
+
+.status-controles select:focus,
+.status-controles input:focus {
+    border-color: var(--primary);
+}
+
+.status-controles input {
+    width: 70px;
+}
+
+/* Aviso de pedidos atrasados */
+.status-alerta {
+    background: var(--late-bg);
+    color: var(--late);
+    border: 1px solid rgba(199, 92, 80, .25);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* Quadro com as 4 colunas */
+.status-quadro {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.status-coluna {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-top: 4px solid;
+    border-radius: 9px;
+    padding: 14px;
+    min-height: 300px;
+}
+
+.coluna-aguardando { border-top-color: var(--waiting); }
+.coluna-preparo    { border-top-color: var(--preparing); }
+.coluna-pronto     { border-top-color: var(--ready); }
+.coluna-entregue   { border-top-color: var(--delivered); }
+
+.status-coluna h3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+/* Contador (mesmo estilo do .reservation-number) */
+.status-contador {
+    background: var(--surface-soft);
+    color: var(--primary);
+    border-radius: 50%;
+    width: 29px;
+    height: 29px;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.status-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.status-vazio {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 30px 10px;
+}
+
+/* Card de pedido */
+.status-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid;
+    border-radius: 8px;
+    padding: 14px;
+    transition: .2s;
+}
+
+.status-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.status-card.aguardando { border-left-color: var(--waiting); }
+.status-card.preparo    { border-left-color: var(--preparing); }
+.status-card.pronto     { border-left-color: var(--ready); }
+.status-card.entregue   { border-left-color: var(--delivered); opacity: .75; }
+
+/* Pedido atrasado */
+.status-card.atrasado {
+    background: var(--late-bg);
+    border-color: rgba(199, 92, 80, .35);
+    border-left-color: var(--late);
+    animation: status-piscar 1.4s infinite;
+}
+
+@keyframes status-piscar {
+    0%, 100% { box-shadow: 0 0 0 rgba(199, 92, 80, 0); }
+    50%      { box-shadow: 0 0 12px rgba(199, 92, 80, .45); }
+}
+
+.status-card-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.status-destino {
+    background: var(--surface-soft);
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 10px;
+}
+
+.status-itens {
+    font-size: 12px;
+    padding-left: 16px;
+    margin-bottom: 6px;
+    line-height: 1.6;
+}
+
+.status-obs {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.status-tempo {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 10px;
+}
+
+.status-card.atrasado .status-tempo {
+    color: var(--late);
+    font-weight: 700;
+}
+
+/* Botão do card (mesmo estilo do .primary-button) */
+.status-botao {
+    width: 100%;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 9px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.status-botao:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+/* Telas menores */
+@media (max-width: 950px) {
+    .status-quadro { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+    .status-panel { padding: 17px; }
+    .status-quadro { grid-template-columns: 1fr; }
+}
+/* FIM DA PARTE 2 */
+
+</style></head>
+<body>
+<div class="app-container">
+<div style="display:flex;justify-content:flex-end;padding:15px 0">
+<button class="theme-toggle" onclick="document.body.classList.toggle('dark-theme')" title="Trocar tema">◐</button>
+</div>
+  <!-- ===================================================== -->
+  <!-- PARTE 2 - MÓDULO DE STATUS DOS PEDIDOS (Kemilly)      -->
+  <!-- Cole dentro do <div class="app-container">, depois    -->
+  <!-- da parte do mapa de mesas e antes do <footer>.        -->
+  <!-- ===================================================== -->
+  <section id="modulo-status" class="status-panel">
+
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">COZINHA E BAR</p>
+        <h3>Painel de Pedidos</h3>
+      </div>
+
+      <div class="status-controles">
+        <label for="status-filtro">Destino</label>
+        <select id="status-filtro" onchange="status_renderizar()">
+          <option value="todos">Todos</option>
+          <option value="cozinha">Cozinha</option>
+          <option value="bar">Bar</option>
+        </select>
+
+        <label for="status-limite">Alerta após (min)</label>
+        <input type="number" id="status-limite" value="15" min="1"
+               onchange="status_renderizar()">
+      </div>
+    </div>
+
+    <!-- Aviso de pedidos atrasados -->
+    <div id="status-alerta" class="status-alerta" hidden></div>
+
+    <!-- Colunas do painel, uma para cada status -->
+    <div class="status-quadro">
+      <div class="status-coluna coluna-aguardando">
+        <h3>Aguardando <span id="status-qtd-aguardando" class="status-contador">0</span></h3>
+        <div id="status-lista-aguardando" class="status-lista"></div>
+      </div>
+
+      <div class="status-coluna coluna-preparo">
+        <h3>Em Preparo <span id="status-qtd-preparo" class="status-contador">0</span></h3>
+        <div id="status-lista-preparo" class="status-lista"></div>
+      </div>
+
+      <div class="status-coluna coluna-pronto">
+        <h3>Pronto <span id="status-qtd-pronto" class="status-contador">0</span></h3>
+        <div id="status-lista-pronto" class="status-lista"></div>
+      </div>
+
+      <div class="status-coluna coluna-entregue">
+        <h3>Entregue <span id="status-qtd-entregue" class="status-contador">0</span></h3>
+        <div id="status-lista-entregue" class="status-lista"></div>
+      </div>
+    </div>
+
+  </section>
+  <!-- FIM DA PARTE 2 -->
+
+</div>
+<script>
+// =====================================================
+// PARTE 2 - MÓDULO DE STATUS DOS PEDIDOS (Kemilly)
+// =====================================================
+
+// Lista de pedidos que aparecem no painel.
+// A Parte 1 (registro de pedidos) deve chamar status_adicionarPedido()
+// sempre que um novo pedido for enviado para a cozinha/bar.
+let status_pedidos = [];
+let status_proximoId = 1;
+
+// Ordem dos status e o texto do botão para avançar
+const status_etapas = ["aguardando", "preparo", "pronto", "entregue"];
+const status_textoBotao = {
+  aguardando: "Iniciar preparo",
+  preparo: "Marcar como pronto",
+  pronto: "Marcar como entregue"
+};
+
+// -----------------------------------------------------
+// Adiciona um pedido ao painel (usado pela Parte 1)
+// Exemplo:
+// status_adicionarPedido({
+//   mesa: 5,
+//   itens: ["2x Picanha", "1x Suco de laranja"],
+//   destino: "cozinha",
+//   observacao: "Picanha mal passada"
+// });
+// -----------------------------------------------------
+function status_adicionarPedido(dados) {
+  const pedido = {
+    id: status_proximoId++,
+    mesa: dados.mesa,
+    itens: dados.itens || [],
+    destino: dados.destino || "cozinha",
+    observacao: dados.observacao || "",
+    status: "aguardando",
+    criadoEm: dados.criadoEm || Date.now()
+  };
+
+  status_pedidos.push(pedido);
+  status_renderizar();
+  return pedido;
+}
+
+// Avança o pedido para o próximo status (clique no botão)
+function status_avancar(id) {
+  const pedido = status_pedidos.find(p => p.id === id);
+  if (!pedido) return;
+
+  const posicao = status_etapas.indexOf(pedido.status);
+  if (posicao < status_etapas.length - 1) {
+    pedido.status = status_etapas[posicao + 1];
+    if (pedido.status === "entregue") {
+      pedido.entregueEm = Date.now();
+    }
+  }
+
+  status_renderizar();
+}
+
+// Minutos que o pedido está esperando
+function status_minutosEspera(pedido) {
+  const fim = pedido.entregueEm || Date.now();
+  return Math.floor((fim - pedido.criadoEm) / 60000);
+}
+
+// Verifica se o pedido passou do tempo limite (entregues não contam)
+function status_estaAtrasado(pedido) {
+  const limite = Number(document.getElementById("status-limite").value) || 15;
+  return pedido.status !== "entregue" && status_minutosEspera(pedido) >= limite;
+}
+
+// Evita que textos digitados quebrem o HTML
+function status_escapar(texto) {
+  const div = document.createElement("div");
+  div.textContent = texto;
+  return div.innerHTML;
+}
+
+// Monta o HTML de um card de pedido
+function status_criarCard(pedido) {
+  const atrasado = status_estaAtrasado(pedido);
+  const minutos = status_minutosEspera(pedido);
+
+  const itensHtml = pedido.itens
+    .map(item => `<li>${status_escapar(item)}</li>`)
+    .join("");
+
+  const obsHtml = pedido.observacao
+    ? `<p class="status-obs">Obs: ${status_escapar(pedido.observacao)}</p>`
+    : "";
+
+  const botaoHtml = pedido.status !== "entregue"
+    ? `<button class="status-botao" onclick="status_avancar(${pedido.id})">
+         ${status_textoBotao[pedido.status]}
+       </button>`
+    : "";
+
+  const tempoTexto = pedido.status === "entregue"
+    ? `Entregue em ${minutos} min`
+    : `${atrasado ? "⚠ ATRASADO - " : ""}Esperando há ${minutos} min`;
+
+  return `
+    <div class="status-card ${pedido.status} ${atrasado ? "atrasado" : ""}">
+      <div class="status-card-topo">
+        <span>Mesa ${status_escapar(String(pedido.mesa))} · #${pedido.id}</span>
+        <span class="status-destino">${pedido.destino}</span>
+      </div>
+      <ul class="status-itens">${itensHtml}</ul>
+      ${obsHtml}
+      <div class="status-tempo">${tempoTexto}</div>
+      ${botaoHtml}
+    </div>
+  `;
+}
+
+// Desenha todo o painel novamente
+function status_renderizar() {
+  const filtro = document.getElementById("status-filtro").value;
+
+  const visiveis = status_pedidos.filter(
+    p => filtro === "todos" || p.destino === filtro
+  );
+
+  // Preenche cada coluna
+  status_etapas.forEach(etapa => {
+    const lista = document.getElementById("status-lista-" + etapa);
+    const doStatus = visiveis.filter(p => p.status === etapa);
+
+    lista.innerHTML = doStatus.length
+      ? doStatus.map(status_criarCard).join("")
+      : `<p class="status-vazio">Nenhum pedido</p>`;
+
+    document.getElementById("status-qtd-" + etapa).textContent = doStatus.length;
+  });
+
+  // Mostra o aviso de atrasados
+  const atrasados = visiveis.filter(status_estaAtrasado);
+  const alerta = document.getElementById("status-alerta");
+
+  if (atrasados.length > 0) {
+    const mesas = atrasados.map(p => "Mesa " + p.mesa).join(", ");
+    alerta.textContent = `⚠ ${atrasados.length} pedido(s) atrasado(s): ${mesas}`;
+    alerta.hidden = false;
+  } else {
+    alerta.hidden = true;
+  }
+}
+
+// Pedidos de exemplo para testar o painel
+// (podem ser apagados quando a Parte 1 estiver integrada)
+function status_carregarExemplos() {
+  const minutosAtras = m => Date.now() - m * 60000;
+
+  status_adicionarPedido({ mesa: 3, itens: ["2x Risoto de cogumelos", "1x Salada Caesar"], destino: "cozinha", criadoEm: minutosAtras(20) });
+  status_adicionarPedido({ mesa: 7, itens: ["2x Caipirinha", "1x Água com gás"], destino: "bar", criadoEm: minutosAtras(4) });
+  status_adicionarPedido({ mesa: 1, itens: ["1x Filé ao molho madeira"], destino: "cozinha", observacao: "Sem cebola", criadoEm: minutosAtras(9) });
+  status_adicionarPedido({ mesa: 5, itens: ["1x Petit gâteau"], destino: "cozinha", criadoEm: minutosAtras(2) });
+
+  status_pedidos[2].status = "preparo";
+  status_pedidos[3].status = "pronto";
+  status_renderizar();
+}
+
+// Inicia o módulo quando a página carregar
+document.addEventListener("DOMContentLoaded", () => {
+  status_carregarExemplos();
+  setInterval(status_renderizar, 30000); // atualiza os tempos a cada 30s
+});
+// FIM DA PARTE 2
+
+</script>
+</body></html>
