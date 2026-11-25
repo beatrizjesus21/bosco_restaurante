@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bosco Restaurante | Registro de Pedidos</title>
+    <link rel="icon" type="image/png" href="logo.png">
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+
+        <header class="topbar">
+            <div class="brand">
+                <img src="logo.png" alt="Logo Bosco Restaurante" class="brand-logo">
+                <div>
+                    <h1>Bosco <span>Restaurante</span></h1>
+                    <p>ATENDIMENTO & PEDIDOS</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <span class="date-display" id="currentDate"></span>
+                <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+                    <span id="themeIcon">☾</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <section class="welcome-section">
+                <div>
+                    <span class="eyebrow">MÓDULO DE ATENDIMENTO</span>
+                    <h2>Registro de <em>pedidos</em></h2>
+                    <p>Lance os pedidos da mesa sem erros e envie diretamente para a cozinha ou bar.</p>
+                </div>
+
+                <button class="primary-button" id="openSentOrdersBtn">
+                    <span>☰</span> Pedidos enviados
+                </button>
+            </section>
+
+            <section class="summary-grid">
+                <article class="summary-card">
+                    <div class="summary-icon free-icon">✓</div>
+                    <div>
+                        <p>Pedidos enviados</p>
+                        <strong id="totalOrdersCount">0</strong>
+                    </div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon reserved-icon">♨</div>
+                    <div>
+                        <p>Enviados p/ Cozinha</p>
+                        <strong id="kitchenOrdersCount">0</strong>
+                    </div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon total-icon">❖</div>
+                    <div>
+                        <p>Enviados p/ Bar</p>
+                        <strong id="barOrdersCount">0</strong>
+                    </div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon occupied-icon">●</div>
+                    <div>
+                        <p>Mesas atendidas</p>
+                        <strong id="activeTablesCount">0</strong>
+                    </div>
+                </article>
+            </section>
+
+            <section class="content-grid">
+
+                <!-- COLUNA ESQUERDA: CARDÁPIO -->
+                <div class="map-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="eyebrow">CARDÁPIO DIGITAL</span>
+                            <h3>Selecionar itens</h3>
+                        </div>
+                        <span class="live-indicator">● Envio direto</span>
+                    </div>
+
+                    <div class="ped-controls">
+                        <input
+                            type="search"
+                            id="menuSearch"
+                            class="ped-search-input"
+                            placeholder="Buscar prato, bebida ou ingrediente..."
+                            aria-label="Buscar item no cardápio"
+                        >
+
+                        <div class="ped-tabs" id="categoryTabs" role="tablist">
+                            <button type="button" class="ped-tab active" data-category="all">Todos</button>
+                            <button type="button" class="ped-tab" data-category="entradas">Entradas</button>
+                            <button type="button" class="ped-tab" data-category="principais">Pratos Principais</button>
+                            <button type="button" class="ped-tab" data-category="sobremesas">Sobremesas</button>
+                            <button type="button" class="ped-tab" data-category="bebidas">Bebidas & Bar</button>
+                        </div>
+                    </div>
+
+                    <div class="legend ped-legend">
+                        <span><i class="dot reserved-dot"></i> Destino: Cozinha</span>
+                        <span><i class="dot free-dot"></i> Destino: Bar</span>
+                    </div>
+
+                    <div class="ped-menu-grid" id="menuGrid"></div>
+
+                    <p class="map-hint">
+                        Clique em "+ Adicionar" para incluir itens na comanda da mesa selecionada.
+                    </p>
+                </div>
+
+                <!-- COLUNA DIREITA: COMANDA / PEDIDO ATUAL -->
+                <aside class="reservations-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="eyebrow">COMANDA ATUAL</span>
+                            <h3>Pedido da mesa</h3>
+                        </div>
+                        <span class="reservation-number" id="orderItemsBadge">0</span>
+                    </div>
+
+                    <form id="orderForm" class="ped-order-form">
+                        <div class="ped-form-grid">
+                            <div>
+                                <label for="orderTableSelect">Mesa</label>
+                                <select id="orderTableSelect" required>
+                                    <option value="">Selecione a mesa</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="waiterName">Atendente</label>
+                                <input type="text" id="waiterName" placeholder="Nome do garçom" required>
+                            </div>
+                        </div>
+
+                        <div class="ped-cart-list" id="currentOrderList">
+                            <div class="empty-state">
+                                <span>♧</span>
+                                <p>Nenhum item adicionado ao pedido.</p>
+                            </div>
+                        </div>
+
+                        <div class="ped-notes-group">
+                            <label for="orderGeneralNotes">Observações gerais do pedido</label>
+                            <textarea id="orderGeneralNotes" placeholder="Ex.: Servir entradas primeiro, alergia alimentar..."></textarea>
+                        </div>
+
+                        <div class="ped-summary-box">
+                            <div class="ped-routing-info" id="routingPreview">
+                                Nenhum destino definido
+                            </div>
+                            <div class="ped-total-row">
+                                <span>Total estimado</span>
+                                <strong id="orderTotalValue">R$ 0,00</strong>
+                            </div>
+                        </div>
+
+                        <div class="ped-actions-stack">
+                            <button type="submit" class="primary-button ped-submit-btn">
+                                <span>✓</span> Enviar pedido (Cozinha / Bar)
+                            </button>
+
+                            <div class="ped-secondary-actions">
+                                <button type="button" class="cancel-button" id="clearOrderBtn">Limpar</button>
+                                <button type="button" class="secondary-button ped-no-margin" id="viewSentOrdersBottom">
+                                    Ver enviados
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </aside>
+
+            </section>
+        </main>
+
+        <footer>
+            <span>BOSCO RESTAURANTE</span>
+            <span>Módulo 1 • Registro e Envio de Pedidos</span>
+        </footer>
+    </div>
+
+    <!-- MODAL DE PEDIDOS ENVIADOS -->
+    <div class="modal-overlay" id="sentOrdersModal">
+        <div class="modal ped-modal-wide">
+            <div class="modal-header">
+                <div>
+                    <span class="eyebrow">FILA DE PRODUÇÃO</span>
+                    <h3>Pedidos enviados hoje</h3>
+                </div>
+                <button class="close-modal" data-close="sentOrdersModal" aria-label="Fechar modal">×</button>
+            </div>
+
+            <div class="ped-modal-filter">
+                <label for="sentOrdersFilter">Filtrar por setor de destino</label>
+                <select id="sentOrdersFilter">
+                    <option value="all">Todos os setores (Cozinha e Bar)</option>
+                    <option value="Cozinha">Apenas Cozinha</option>
+                    <option value="Bar">Apenas Bar</option>
+                </select>
+            </div>
+
+            <div class="reservations-list" id="sentOrdersList"></div>
+
+            <div class="modal-actions">
+                <button type="button" class="cancel-button" data-close="sentOrdersModal">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="pedidos.js"></script>
+</body>
+</html>
