@@ -3,18 +3,19 @@
     --bg: #f3eee4;
     --surface: #fffdf8;
     --surface-soft: #ebe3d5;
-    --text: #343b38;
-    --muted: #85877f;
+    --text: #22272a;
+    --muted: #5b5f58;
     --primary: #234e4b;
     --primary-hover: #173d3b;
-    --border: #e5ddcf;
+    --border: #cfc6b5;
     --shadow: 0 8px 28px rgba(55, 47, 34, .06);
 
-    --free: #3e946d;
+    /* Cores de status com contraste mínimo WCAG AA (4.5:1) sobre o fundo claro */
+    --free: #2d7552;
     --free-bg: #e4f1e8;
-    --occupied: #c75c50;
+    --occupied: #a94438;
     --occupied-bg: #f8e7e3;
-    --reserved: #d38a37;
+    --reserved: #8f5a14;
     --reserved-bg: #fbefdc;
 }
 
@@ -29,9 +30,32 @@ body.dark-theme {
     --border: #355457;
     --shadow: 0 8px 28px rgba(0, 0, 0, .16);
 
+    --free: #7fd1a6;
+    --occupied: #f19a8e;
+    --reserved: #f0b465;
     --free-bg: #234b42;
     --occupied-bg: #573936;
     --reserved-bg: #59452d;
+}
+
+/* ALTO CONTRASTE: sobrepõe o tema claro e o escuro */
+body.high-contrast {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-soft: #f0f0f0;
+    --text: #000000;
+    --muted: #1a1a1a;
+    --primary: #003a8c;
+    --primary-hover: #002766;
+    --border: #000000;
+    --shadow: none;
+
+    --free: #00501a;
+    --free-bg: #ffffff;
+    --occupied: #8a0000;
+    --occupied-bg: #ffffff;
+    --reserved: #5c3300;
+    --reserved-bg: #ffffff;
 }
 
 * {
@@ -100,7 +124,7 @@ button {
 
 .brand p {
     color: var(--muted);
-    font-size: 9px;
+    font-size: 11px;
     letter-spacing: 2.5px;
     margin-top: 3px;
 }
@@ -138,7 +162,7 @@ button {
 
 .eyebrow {
     color: var(--primary);
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 2px;
 }
@@ -380,13 +404,13 @@ button {
 }
 
 .table-capacity {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
 }
 
 .map-hint {
     color: var(--muted);
-    font-size: 11px;
+    font-size: 13px;
     text-align: center;
     margin-top: 22px;
 }
@@ -429,7 +453,7 @@ button {
 }
 
 .reservation-item p {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     margin-top: 3px;
 }
@@ -739,6 +763,201 @@ footer {
     }
 }
 
+
+/* ==========================================================================
+   ACESSIBILIDADE (foco, alvos de toque, reservas com necessidades)
+   ========================================================================== */
+
+/* Foco visível para navegação por teclado */
+:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+}
+
+body.high-contrast :focus-visible {
+    outline-color: #000;
+}
+
+/* Alvos de toque com no mínimo 44px */
+.theme-toggle,
+.contrast-toggle,
+.close-modal,
+.delete-reservation,
+.suggestion-btn {
+    min-height: 44px;
+}
+
+.contrast-toggle {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 22px;
+    padding: 0 14px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.contrast-toggle[aria-pressed="true"] {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+body.high-contrast .table-card,
+body.high-contrast .summary-card,
+body.high-contrast .map-panel,
+body.high-contrast .reservations-panel,
+body.high-contrast .modal,
+body.high-contrast .primary-button,
+body.high-contrast .secondary-button,
+body.high-contrast .cancel-button,
+body.high-contrast .reservation-item {
+    border: 2px solid var(--border);
+}
+
+body.high-contrast .primary-button,
+body.high-contrast .contrast-toggle[aria-pressed="true"] {
+    color: #fff;
+}
+
+/* Símbolo de acessibilidade no mapa e na legenda */
+.access-mark {
+    font-style: normal;
+    font-size: 13px;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.table-access {
+    font-size: 14px;
+    line-height: 1;
+    color: var(--primary);
+}
+
+/* Bloco de necessidades na reserva */
+.modal .accessibility-fieldset {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: 18px;
+    min-width: 0;
+}
+
+.accessibility-fieldset legend {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 0 6px;
+}
+
+.accessibility-fieldset .optional {
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.field-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 4px 0 12px;
+}
+
+.needs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.modal .check-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 10px 12px;
+    min-height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.modal .check-option input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+/* Mesas sugeridas */
+.suggestion-box {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 8px;
+    background: var(--surface-soft);
+    color: var(--text);
+    font-size: 14px;
+}
+
+.suggestion-box[hidden] {
+    display: none;
+}
+
+.suggestion-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.suggestion-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.suggestion-btn {
+    background: var(--surface);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.suggestion-btn:hover {
+    background: var(--surface-soft);
+}
+
+.suggestion-btn[aria-pressed="true"] {
+    background: var(--primary);
+    color: #fff;
+}
+
+.reservation-needs {
+    color: var(--primary) !important;
+    font-weight: 600;
+}
+
+.table-reservation-info p + p {
+    margin-top: 6px;
+}
+
+@media (max-width: 600px) {
+    .needs-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contrast-toggle {
+        font-size: 12px;
+        padding: 0 10px;
+    }
+}
 
 /* ==========================================================================
    LOGO E MENU DE NAVEGAÇÃO UNIFICADO

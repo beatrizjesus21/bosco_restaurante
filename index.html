@@ -33,6 +33,7 @@
             
             <div class="header-actions">
                 <span class="date-display" id="currentDate"></span>
+                <button class="contrast-toggle" id="highContrastToggle" type="button" aria-pressed="false">Alto contraste</button>
                 <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
                     <span id="themeIcon">☾</span>
                 </button>
@@ -101,6 +102,7 @@
                         <span><i class="dot free-dot"></i> Livre</span>
                         <span><i class="dot occupied-dot"></i> Ocupada</span>
                         <span><i class="dot reserved-dot"></i> Reservada</span>
+                        <span><i class="access-mark" aria-hidden="true">♿</i> Acessível</span>
                     </div>
 
                     <div class="salon-label">
@@ -186,6 +188,36 @@
                         </select>
                     </div>
                 </div>
+
+                <fieldset class="accessibility-fieldset">
+                    <legend>Necessidades de acessibilidade <span class="optional">(opcional)</span></legend>
+                    <p class="field-hint">Marque apenas o que for necessário. O sistema sugere somente mesas adequadas.</p>
+
+                    <div class="needs-grid">
+                        <label class="check-option">
+                            <input type="checkbox" name="accessNeeds" value="wheelchair">
+                            Cadeirante
+                        </label>
+                        <label class="check-option">
+                            <input type="checkbox" name="accessNeeds" value="reduced_mobility">
+                            Mobilidade reduzida
+                        </label>
+                        <label class="check-option">
+                            <input type="checkbox" name="accessNeeds" value="guide_dog">
+                            Cão-guia
+                        </label>
+                        <label class="check-option">
+                            <input type="checkbox" name="accessNeeds" value="visual">
+                            Deficiência visual
+                        </label>
+                        <label class="check-option">
+                            <input type="checkbox" name="accessNeeds" value="hearing">
+                            Deficiência auditiva
+                        </label>
+                    </div>
+                </fieldset>
+
+                <div class="suggestion-box" id="tableSuggestions" aria-live="polite" hidden></div>
 
                 <label for="reservationNotes">Observações</label>
                 <textarea id="reservationNotes" placeholder="Alguma informação adicional?"></textarea>

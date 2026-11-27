@@ -9,6 +9,41 @@ const STATUS = {
 
 const CAPACITIES = [2, 4, 4, 2, 6, 4, 2, 4, 6, 2, 4, 6];
 
+// Necessidades de acessibilidade que o cliente pode informar na reserva.
+// "requires" é o recurso físico que a mesa precisa ter para atender à necessidade.
+const ACCESS_NEEDS = {
+    wheelchair: { label: "Cadeirante", requires: "wheelchair" },
+    reduced_mobility: { label: "Mobilidade reduzida", requires: "accessibleRoute" },
+    guide_dog: { label: "Cão-guia", requires: "guideDogSpace" },
+    visual: { label: "Deficiência visual", requires: "wellLit" },
+    hearing: { label: "Deficiência auditiva", requires: "quiet" }
+};
+
+// Recursos físicos de cada mesa.
+// Ajuste estes valores conforme o layout real do salão.
+const TABLE_ACCESSIBILITY = {
+    1:  { accessibleRoute: true,  wheelchair: true,  guideDogSpace: false, wellLit: true,  quiet: false },
+    2:  { accessibleRoute: true,  wheelchair: true,  guideDogSpace: true,  wellLit: true,  quiet: false },
+    3:  { accessibleRoute: true,  wheelchair: false, guideDogSpace: false, wellLit: false, quiet: false },
+    4:  { accessibleRoute: false, wheelchair: false, guideDogSpace: true,  wellLit: false, quiet: true },
+    5:  { accessibleRoute: true,  wheelchair: true,  guideDogSpace: true,  wellLit: false, quiet: true },
+    6:  { accessibleRoute: false, wheelchair: false, guideDogSpace: false, wellLit: true,  quiet: true },
+    7:  { accessibleRoute: true,  wheelchair: false, guideDogSpace: false, wellLit: false, quiet: false },
+    8:  { accessibleRoute: true,  wheelchair: true,  guideDogSpace: true,  wellLit: true,  quiet: false },
+    9:  { accessibleRoute: true,  wheelchair: true,  guideDogSpace: false, wellLit: false, quiet: true },
+    10: { accessibleRoute: true,  wheelchair: false, guideDogSpace: false, wellLit: false, quiet: true },
+    11: { accessibleRoute: false, wheelchair: false, guideDogSpace: false, wellLit: true,  quiet: false },
+    12: { accessibleRoute: true,  wheelchair: true,  guideDogSpace: true,  wellLit: true,  quiet: true }
+};
+
+const ACCESS_FEATURES = {
+    accessibleRoute: "Acesso facilitado",
+    wheelchair: "Espaço para cadeira de rodas",
+    guideDogSpace: "Espaço para cão-guia",
+    wellLit: "Bem iluminada",
+    quiet: "Área silenciosa"
+};
+
 function getLocalDate() {
     const date = new Date();
     const year = date.getFullYear();
@@ -45,6 +80,56 @@ function saveData() {
     localStorage.setItem("bosco_reservations", JSON.stringify(reservations));
 }
 
+// ACCESSIBILITY MATCHING
+
+function getTableAccess(tableId) {
+    return TABLE_ACCESSIBILITY[tableId] || {};
+}
+
+function getAccessFeatureLabels(tableId) {
+    const access = getTableAccess(tableId);
+
+    return Object.keys(ACCESS_FEATURES)
+        .filter(key => access[key] === true)
+        .map(key => ACCESS_FEATURES[key]);
+}
+
+function getNeedLabels(needs) {
+    return needs.map(need => ACCESS_NEEDS[need]?.label || need).join(", ");
+}
+
+// Cruza as necessidades do cliente com os recursos da mesa.
+// Sem necessidades, qualquer mesa atende.
+function tableMeetsNeeds(table, needs) {
+    const access = getTableAccess(table.id);
+
+    return needs.every(need => {
+        const requirement = ACCESS_NEEDS[need];
+        return requirement ? access[requirement.requires] === true : true;
+    });
+}
+
+// Mesas livres, com capacidade suficiente e compatíveis com as necessidades.
+// Ordena da menor para a maior mesa, para não ocupar mesas grandes sem necessidade.
+function findSuggestedTables(people, needs) {
+    return tables
+        .filter(table =>
+            table.status === "free" &&
+            table.capacity >= people &&
+            tableMeetsNeeds(table, needs)
+        )
+        .sort((a, b) => a.capacity - b.capacity || a.id - b.id);
+}
+
+function getSelectedNeeds() {
+    return [...document.querySelectorAll('input[name="accessNeeds"]:checked')]
+        .map(input => input.value);
+}
+
+function getTableTitle(id) {
+    return `Mesa ${String(id).padStart(2, "0")}`;
+}
+
 // DATA
 
 function updateDate() {
@@ -70,19 +155,23 @@ function renderTables() {
 
     tables.forEach(table => {
         const card = document.createElement("button");
+        const access = getTableAccess(table.id);
+        const featureLabels = getAccessFeatureLabels(table.id);
 
         card.type = "button";
         card.className = `table-card ${table.status}`;
 
         card.setAttribute(
             "aria-label",
-            `Mesa ${table.id}, ${STATUS[table.status]}`
+            `Mesa ${table.id}, ${STATUS[table.status]}, ${table.capacity} lugares` +
+            (featureLabels.length ? `. ${featureLabels.join(", ")}` : "")
         );
 
         card.innerHTML = `
             <span class="table-number">${String(table.id).padStart(2, "0")}</span>
             <span class="table-status">${STATUS[table.status]}</span>
             <span class="table-capacity">${table.capacity} lugares</span>
+            ${access.wheelchair ? '<span class="table-access" aria-hidden="true" title="Acessível para cadeirante">♿</span>' : ""}
         `;
 
         card.addEventListener("click", () => openTableModal(table.id));
@@ -152,12 +241,15 @@ function openReservationModal() {
     document.getElementById("reservationTime").value = "19:00";
 
     updateReservationOptions();
+    renderSuggestions();
     openModal("reservationModal");
 }
 
+// Mesas livres no seletor. Desabilita as que não atendem às necessidades marcadas.
 function updateReservationOptions() {
     const select = document.getElementById("reservationTable");
     const previousValue = select.value;
+    const needs = getSelectedNeeds();
 
     select.innerHTML = '<option value="">Selecione uma mesa</option>';
 
@@ -165,17 +257,83 @@ function updateReservationOptions() {
         .filter(table => table.status === "free")
         .forEach(table => {
             const option = document.createElement("option");
+            const meetsNeeds = tableMeetsNeeds(table, needs);
 
             option.value = table.id;
-            option.textContent = `Mesa ${table.id} — ${table.capacity} lugares`;
+            option.textContent =
+                `Mesa ${table.id} — ${table.capacity} lugares` +
+                (meetsNeeds ? "" : " (não atende às necessidades)");
+            option.disabled = !meetsNeeds;
 
             select.appendChild(option);
         });
 
-    if ([...select.options].some(option => option.value === previousValue)) {
+    if ([...select.options].some(option => option.value === previousValue && !option.disabled)) {
         select.value = previousValue;
     }
 }
+
+// Painel com as mesas sugeridas para as necessidades informadas.
+function renderSuggestions() {
+    const box = document.getElementById("tableSuggestions");
+    const select = document.getElementById("reservationTable");
+    const needs = getSelectedNeeds();
+
+    box.innerHTML = "";
+
+    if (needs.length === 0) {
+        box.hidden = true;
+        return;
+    }
+
+    const people = Number(document.getElementById("peopleCount").value) || 1;
+    const suggested = findSuggestedTables(people, needs);
+
+    box.hidden = false;
+
+    const title = document.createElement("p");
+    title.className = "suggestion-title";
+
+    title.textContent = suggested.length
+        ? `Mesas sugeridas para: ${getNeedLabels(needs).toLowerCase()}.`
+        : "Nenhuma mesa livre atende a todas essas necessidades agora. Tente outro horário ou ajuste as necessidades.";
+
+    box.appendChild(title);
+
+    if (suggested.length === 0) return;
+
+    const list = document.createElement("div");
+    list.className = "suggestion-list";
+
+    suggested.forEach(table => {
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "suggestion-btn";
+        button.textContent = `${getTableTitle(table.id)} — ${table.capacity} lugares`;
+        button.setAttribute("aria-pressed", String(String(table.id) === select.value));
+
+        button.addEventListener("click", () => {
+            select.value = String(table.id);
+            renderSuggestions();
+        });
+
+        list.appendChild(button);
+    });
+
+    box.appendChild(list);
+}
+
+document.querySelectorAll('input[name="accessNeeds"]').forEach(input => {
+    input.addEventListener("change", () => {
+        updateReservationOptions();
+        renderSuggestions();
+    });
+});
+
+document.getElementById("peopleCount").addEventListener("input", renderSuggestions);
+
+document.getElementById("reservationTable").addEventListener("change", renderSuggestions);
 
 document.getElementById("reservationForm").addEventListener("submit", event => {
     event.preventDefault();
@@ -186,12 +344,14 @@ document.getElementById("reservationForm").addEventListener("submit", event => {
     const people = Number(document.getElementById("peopleCount").value);
     const tableId = Number(document.getElementById("reservationTable").value);
     const notes = document.getElementById("reservationNotes").value.trim();
+    const needs = getSelectedNeeds();
 
     const table = tables.find(item => item.id === tableId);
 
     if (!table || table.status !== "free") {
         showToast("Essa mesa não está mais disponível.");
         updateReservationOptions();
+        renderSuggestions();
         return;
     }
 
@@ -210,6 +370,11 @@ document.getElementById("reservationForm").addEventListener("submit", event => {
         return;
     }
 
+    if (!tableMeetsNeeds(table, needs)) {
+        showToast("A mesa escolhida não atende às necessidades de acessibilidade do cliente.");
+        return;
+    }
+
     const reservation = {
         id: Date.now(),
         name,
@@ -217,7 +382,8 @@ document.getElementById("reservationForm").addEventListener("submit", event => {
         time,
         people,
         tableId,
-        notes
+        notes,
+        accessNeeds: needs
     };
 
     reservations.push(reservation);
@@ -275,6 +441,14 @@ function renderReservations() {
 
         details.append(name, tableInfo, peopleInfo);
 
+        if (reservation.accessNeeds?.length) {
+            const needsInfo = document.createElement("p");
+            needsInfo.className = "reservation-needs";
+            needsInfo.textContent = `Acessibilidade: ${getNeedLabels(reservation.accessNeeds)}`;
+
+            details.append(needsInfo);
+        }
+
         const actions = document.createElement("div");
 
         const time = document.createElement("span");
@@ -330,8 +504,7 @@ function openTableModal(id) {
 
     selectedTableId = id;
 
-    document.getElementById("tableModalTitle").textContent =
-        `Mesa ${String(id).padStart(2, "0")}`;
+    document.getElementById("tableModalTitle").textContent = getTableTitle(id);
 
     document.getElementById("tableStatus").value = table.status;
 
@@ -346,13 +519,34 @@ function openTableModal(id) {
         item => item.id === table.reservationId
     );
 
+    info.textContent = "";
+
+    const mainLine = document.createElement("p");
+
     if (reservation) {
-        info.textContent =
+        mainLine.textContent =
             `Cliente: ${reservation.name} | Horário: ${reservation.time} | Pessoas: ${reservation.people}`;
     } else {
-        info.textContent =
+        mainLine.textContent =
             `Capacidade: ${table.capacity} lugares. Nenhuma reserva vinculada.`;
     }
+
+    info.append(mainLine);
+
+    if (reservation?.accessNeeds?.length) {
+        const needsLine = document.createElement("p");
+        needsLine.textContent = `Necessidades de acessibilidade: ${getNeedLabels(reservation.accessNeeds)}.`;
+        info.append(needsLine);
+    }
+
+    const featureLabels = getAccessFeatureLabels(id);
+    const featureLine = document.createElement("p");
+
+    featureLine.textContent = featureLabels.length
+        ? `Recursos da mesa: ${featureLabels.join(", ")}.`
+        : "Esta mesa não possui recursos de acessibilidade cadastrados.";
+
+    info.append(featureLine);
 
     openModal("tableModal");
 }
@@ -431,9 +625,39 @@ themeToggle.addEventListener("click", () => {
     applyTheme(isDark ? "light" : "dark");
 });
 
+// HIGH CONTRAST
+
+const contrastToggle = document.getElementById("highContrastToggle");
+
+function applyHighContrast(enabled) {
+    document.body.classList.toggle("high-contrast", enabled);
+
+    contrastToggle.setAttribute("aria-pressed", String(enabled));
+
+    try {
+        localStorage.setItem("bosco_high_contrast", enabled ? "1" : "0");
+    } catch {
+        // Armazenamento indisponível: a preferência vale apenas nesta página.
+    }
+}
+
+contrastToggle.addEventListener("click", () => {
+    applyHighContrast(!document.body.classList.contains("high-contrast"));
+});
+
 // INITIALIZATION
+
+function loadHighContrastPreference() {
+    try {
+        return localStorage.getItem("bosco_high_contrast") === "1";
+    } catch {
+        return false;
+    }
+}
 
 updateDate();
 applyTheme(localStorage.getItem("bosco_theme") || "light");
+applyHighContrast(loadHighContrastPreference());
 renderTables();
 renderReservations();
+renderSuggestions();
